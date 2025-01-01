@@ -1,0 +1,12 @@
+{
+  "name": "lsp-sample",
+  "description": "A language server example",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "activationEvents": [
+    "onLanguage:plaintext"
+  ],
+  "main": "./client/out/extension"
+}
