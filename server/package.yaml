@@ -23,6 +23,9 @@ dependencies:
   - lsp
   - lsp-types
   - text
+  - co-log-core
+  - co-log
+  - prettyprinter
 
 ghc-options:
   - -Wall
