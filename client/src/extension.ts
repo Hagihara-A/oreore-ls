@@ -20,8 +20,8 @@ export function activate(context: ExtensionContext) {
   // Otherwise the run options are used
   const opt = {
     command: "stack",
-    args: ["run"],
-    // transport: TransportKind.stdio,
+    args: ["run", "--"],
+    transport: TransportKind.stdio,
     options: {
       cwd: "/home/arark/oreore-ls/server",
     },
@@ -35,10 +35,6 @@ export function activate(context: ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     // Register the server for plain text documents
     documentSelector: [{ scheme: "file", language: "plaintext" }],
-    synchronize: {
-      // Notify the server about file changes to '.clientrc files contained in the workspace
-      fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),
-    },
   };
 
   // Create the language client and start the client.
