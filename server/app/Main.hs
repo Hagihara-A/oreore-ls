@@ -2,11 +2,15 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+import Colog.Core (LogAction (..), Severity (..), WithSeverity (..), logStringHandle)
+import qualified Colog.Core as L
 import Control.Monad.IO.Class
 import qualified Data.Text as T
 import Language.LSP.Protocol.Message
 import Language.LSP.Protocol.Types
 import Language.LSP.Server
+import System.IO (stdin, stdout)
+import Prettyprinter(viaShow, brackets, Pretty(..) )
 
 handlers :: Handlers (LspM ())
 handlers =
@@ -42,7 +46,7 @@ handlers =
 
 main :: IO Int
 main =
-  runServer $
+  runServer' $
     ServerDefinition
       { parseConfig = const $ const $ Right (),
         onConfigChange = const $ pure (),
@@ -53,3 +57,17 @@ main =
         interpretHandler = \env -> Iso (runLspT env) liftIO,
         options = defaultOptions
       }
+
+runServer' :: ServerDefinition config -> IO Int
+runServer' config  = do
+  runServerWithHandles
+    ioLogger
+    lspLogger
+    stdin
+    stdout
+    config
+  where
+    prettyMsg :: (WithSeverity LspServerLog) -> String
+    prettyMsg l = show $ brackets (viaShow (L.getSeverity l)) <> pretty (L.getMsg l)
+    ioLogger = L.cmap (prettyMsg) L.logStringStderr
+    lspLogger = L.cmap (prettyMsg) L.logStringStderr
